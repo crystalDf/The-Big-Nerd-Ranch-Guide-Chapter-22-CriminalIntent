@@ -306,29 +306,30 @@ public class CrimeListFragment extends ListFragment {
         }
     }
 
-//    @Override
-//    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-//        getActivity().getMenuInflater().inflate(R.menu.context_menu_fragment_crime_list_item_delete_crime, menu);
-//    }
-//
-//    @Override
-//    public boolean onContextItemSelected(MenuItem item) {
-//
-//        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-//        int position = info.position;
-//        CrimeAdapter adapter = (CrimeAdapter) getListAdapter();
-//        Crime crime = adapter.getItem(position);
-//
-//        switch (item.getItemId()) {
-//            case R.id.context_menu_item_delete_crime:
-//                CrimeLab.getCrimeLab(getActivity()).deleteCrime(crime);
-////                adapter.notifyDataSetChanged();
-//                updateUI();
-//                return true;
-//        }
-//
-//        return super.onContextItemSelected(item);
-//    }
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        getActivity().getMenuInflater().inflate(R.menu.context_menu_fragment_crime_list_item_delete_crime, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.context_menu_item_delete_crime:
+
+                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                int position = info.position;
+                CrimeAdapter adapter = (CrimeAdapter) getListAdapter();
+                Crime crime = adapter.getItem(position);
+
+                CrimeLab.getCrimeLab(getActivity()).deleteCrime(crime);
+//                adapter.notifyDataSetChanged();
+                updateUI();
+                return true;
+        }
+
+        return super.onContextItemSelected(item);
+    }
 
     private class CrimeAdapter extends ArrayAdapter<Crime> {
 
