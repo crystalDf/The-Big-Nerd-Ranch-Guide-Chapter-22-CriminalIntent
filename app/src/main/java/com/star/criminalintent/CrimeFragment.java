@@ -55,6 +55,8 @@ public class CrimeFragment extends Fragment {
     private Button mSuspectButton;
     private Button mDialButton;
 
+    private Callbacks mCallbacks;
+
     public static final String EXTRA_CRIME_ID = "com.star.criminalintent.crime_id";
 
     private static final String DIALOG_DATE = "date";
@@ -122,6 +124,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mCrime.setTitle(s.toString());
+                mCallbacks.onCrimeUpdated(mCrime);
             }
 
             @Override
@@ -152,6 +155,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setSolved(isChecked);
+                mCallbacks.onCrimeUpdated(mCrime);
             }
         });
 
@@ -295,6 +299,8 @@ public class CrimeFragment extends Fragment {
 
             c.close();
         }
+
+        mCallbacks.onCrimeUpdated(mCrime);
     }
 
     @Override
@@ -318,6 +324,8 @@ public class CrimeFragment extends Fragment {
                 if (NavUtils.getParentActivityName(getActivity()) != null) {
                     NavUtils.navigateUpFromSameTask(getActivity());
                 }
+                mCallbacks.onCrimeUpdated(mCrime);
+                ((CrimeListActivity) getActivity()).onCrimeSelected(null);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -337,6 +345,7 @@ public class CrimeFragment extends Fragment {
                 deleteOldPhoto(mCrime);
                 mCrime.setPhoto(null);
                 PictureUtils.cleanImageView(mPhotoView);
+                mCallbacks.onCrimeUpdated(mCrime);
                 return true;
         }
 
@@ -410,20 +419,36 @@ public class CrimeFragment extends Fragment {
         }
 
 //        String suspect = mCrime.getSuspect();
-        String suspect = mCrime.getSuspect().getDisplayName();
+        Suspect suspect = mCrime.getSuspect();
+        String suspectString;
 
         if (suspect == null) {
-            suspect = getString(R.string.crime_report_no_suspect);
+            suspectString = getString(R.string.crime_report_no_suspect);
         } else {
-            suspect = getString(R.string.crime_report_suspect, suspect);
+            suspectString = getString(R.string.crime_report_suspect, suspect.getDisplayName());
         }
 
         String report = getString(R.string.crime_report, mCrime.getTitle(),
-                mCrime.getFormattedDate(), solvedString, suspect);
+                mCrime.getFormattedDate(), solvedString, suspectString);
 
         return report;
     }
 
+    public interface Callbacks {
+        void onCrimeUpdated(Crime crime);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCallbacks = (Callbacks) activity;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
 }
 
 

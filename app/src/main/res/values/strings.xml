@@ -22,7 +22,7 @@
     <string name="delete_crime">Delete</string>
 
     <string name="empty_text_view">There are no crimes.</string>
-    <string name="empty_button">New Crime</string>
+    <string name="empty_new_crime_button">New Crime</string>
 
     <string name="take">Take!</string>
 
